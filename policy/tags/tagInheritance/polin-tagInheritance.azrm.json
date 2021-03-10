@@ -1,0 +1,187 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "environment": {
+            "type": "string",
+            "metadata": {
+                "description": "placeholder for policy definition"
+            }
+        },
+        "costCenter": {
+            "type": "string",
+            "metadata": {
+                "description": "placeholder for policy definition"
+            }         
+        },
+        "customer": {
+            "type": "string",
+            "metadata": {
+                "description": "placeholder for policy definition"
+            }            
+        },
+        "technicalPOC": {
+            "type": "string",
+            "metadata": {
+                "description": "placeholder for policy definition"
+            }            
+        },
+        "appName": {
+            "type": "string",
+            "metadata": {
+                "description": "placeholder for policy definition"
+            }         
+        },
+        "appOwner": {
+            "type": "string",
+            "metadata": {
+                "description": "placeholder for policy definition"
+            }           
+        },
+        "dataClassification": {
+            "type": "string",
+            "metadata": {
+                "description": "placeholder for policy definition"
+            }            
+        }                                                          
+    },
+    "variables": {},
+    "resources": [
+        {
+        "name": "string",
+        "type": "Microsoft.Authorization/policySetDefinitions",
+        "apiVersion": "2020-03-01",
+        "properties": {
+            "policyType": "Custom",
+            "displayName": "polin-requiredTAGs-template",
+            "description": "Manage required tags across the organization",
+            "metadata": {
+                "category": "custom-tagging"
+            },
+            "parameters": {
+                "environment": {
+                    "type": "string",
+                    "metadata": {
+                        "displayName": "sub_EnvironmentTag"
+                    },
+                    "defaultValue": "environment"
+                },
+                "costCenter":  {
+                    "type":  "String",
+                    "metadata":  {
+                                    "displayName": "sub_CostCenter",
+                                    "description": "Customer cost center information"
+                                },
+                    "defaultValue": "costCenter"                                   
+                },
+                "customer":  {
+                    "type":  "String",
+                    "metadata":  {
+                                    "displayName": "sub_Customer",
+                                    "description": "Customer / owner identifier"
+                                },
+                    "defaultValue": "customer"
+                },
+                "technicalPOC":  {
+                    "type":  "String",
+                    "metadata":  {
+                                    "displayName": "rg_TechinicalPOC",
+                                    "description": "Technical Point of Contact"
+                                },
+                    "defaultValue": "technicalPOC"                                
+                },
+                "appName":  {
+                    "type":  "String",
+                    "metadata":  {
+                                    "displayName": "rg_AppName",
+                                    "description": "Application or Workload name"
+                                },
+                    "defaultValue": "appName"                                
+                },
+                "appOwner":  {
+                    "type":  "String",
+                    "metadata":  {
+                                    "displayName": "rg_appOwner",
+                                    "description": "Application or workload owner"
+                                },
+                    "defaultValue": "appOwner"                                
+                },
+                "dataClassification":  {
+                    "type":  "String",
+                    "metadata":  {
+                                    "displayName": "rg_dataClassification",
+                                    "description": "Data classification level"
+                                },
+                    "defaultValue": "dataClassification"                                
+                }                
+            },
+            "policyDefinitions": [
+                {
+                    "policyDefinitionReferenceId": "Inherit a tag from the subscription_environment",
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
+                    "parameters": {
+                        "tagName": {
+                            "value": "[parameters('environment')]"
+                        }
+                    }
+                },
+                {
+                    "policyDefinitionReferenceId": "Inherit a tag from the resource group_appName",
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/cd3aa116-8754-49c9-a813-ad46512ece54",
+                    "parameters": {
+                        "tagName": {
+                            "value": "[parameters('appName')]"
+                        }
+                    }
+                },
+                {
+                    "policyDefinitionReferenceId": "Inherit a tag from the subscription_costCenter",
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
+                    "parameters": {
+                        "tagName": {
+                            "value": "[parameters('costCenter')]"
+                        }
+                    }
+                },
+                {
+                    "policyDefinitionReferenceId": "Inherit a tag from the subscription_customer",
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
+                    "parameters": {
+                        "tagName": {
+                            "value": "[parameters('customer')]"
+                        }
+                    }
+                },
+                {
+                    "policyDefinitionReferenceId": "Inherit a tag from the resource group_technicalPOC",
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/cd3aa116-8754-49c9-a813-ad46512ece54",
+                    "parameters": {
+                        "tagName": {
+                            "value": "[parameters('technicalPOC')]"
+                        }
+                    }
+                },
+                {
+                    "policyDefinitionReferenceId": "Inherit a tag from the resource group_dataClassification",
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/cd3aa116-8754-49c9-a813-ad46512ece54",
+                    "parameters": {
+                        "tagName": {
+                            "value": "[parameters('dataClassification')]"
+                        }
+                    }
+                },
+                {
+                    "policyDefinitionReferenceId": "Inherit a tag from the resource group_appOwner",
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/cd3aa116-8754-49c9-a813-ad46512ece54",
+                    "parameters": {
+                        "tagName": {
+                            "value": "[parameters('appOwner')]"
+                        }
+                    }
+                }                                                                                                  
+            ]
+        }
+        }        
+    ],
+    "outputs": {}
+}

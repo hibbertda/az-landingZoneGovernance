@@ -1,0 +1,28 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "tenantRootID":{
+            "value": ""
+        },
+        "roleName": {
+            "value": "reader"
+        },
+        "roleDescription": {
+            "value": "Custom reader Role"
+        },
+        "actions": {
+            "value": [
+                "*/read"
+            ]
+        },
+        "notActions": {
+            "value": [
+                "Microsoft.Network/networkInterfaces/delete",
+                "Microsoft.Network/serviceEndpointPolicies/write",
+                "Microsoft.Network/expressRouteCircuits/*",
+                "microsoft.network/virtualnetworkgateways/*"
+            ]
+        }
+    }
+}

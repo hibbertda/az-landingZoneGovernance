@@ -1,0 +1,119 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "technicalPOC": {
+            "type": "string",
+            "metadata": {
+                "description": "placeholder for policy definition"
+            }            
+        },
+        "appName": {
+            "type": "string",
+            "metadata": {
+                "description": "placeholder for policy definition"
+            }         
+        },
+        "appOwner": {
+            "type": "string",
+            "metadata": {
+                "description": "placeholder for policy definition"
+            }           
+        },
+        "dataClassification": {
+            "type": "string",
+            "metadata": {
+                "description": "placeholder for policy definition"
+            }            
+        }                                                          
+    },
+    "variables": {},
+    "resources": [
+        {
+        "name": "polin-requiredTags",
+        "type": "Microsoft.Authorization/policySetDefinitions",
+        "apiVersion": "2020-03-01",
+        "properties": {
+            "policyType": "Custom",
+            "displayName": "polin-requiredTAGs-rg_sub",
+            "description": "Manage required tags across the organization at the subscription and resource group level(s)",
+            "metadata": {
+                "category": "custom-tagging"
+            },
+            "parameters": {
+                "technicalPOC":  {
+                    "type":  "String",
+                    "metadata":  {
+                                    "displayName": "rg_TechinicalPOC",
+                                    "description": "Technical Point of Contact"
+                                },
+                    "defaultValue": "technicalPOC"                                
+                },
+                "appName":  {
+                    "type":  "String",
+                    "metadata":  {
+                                    "displayName": "rg_AppName",
+                                    "description": "Application or Workload name"
+                                },
+                    "defaultValue": "appName"                                
+                },
+                "appOwner":  {
+                    "type":  "String",
+                    "metadata":  {
+                                    "displayName": "rg_appOwner",
+                                    "description": "Application or workload owner"
+                                },
+                    "defaultValue": "appOwner"                                
+                },
+                "dataClassification":  {
+                    "type":  "String",
+                    "metadata":  {
+                                    "displayName": "rg_dataClassification",
+                                    "description": "Data classification level"
+                                },
+                    "defaultValue": "dataClassification"                                
+                }                
+            },
+            "policyDefinitions": [
+                {
+                    "policyDefinitionReferenceId": "Require a tag on resource groups_appName",
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/96670d01-0a4d-4649-9c89-2d3abc0a5025",
+                    "parameters": {
+                        "tagName": {
+                            "value": "[parameters('appName')]"
+                        }
+                    }
+                },
+                {
+                    "policyDefinitionReferenceId": "Require a tag on resource groups_technicalPOC",
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/96670d01-0a4d-4649-9c89-2d3abc0a5025",
+                    "parameters": {
+                        "tagName": {
+                            "value": "[parameters('technicalPOC')]"
+                        }
+                    }
+                },
+                {
+                    "policyDefinitionReferenceId": "Require a tag on resource groups_dataClassification",
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/96670d01-0a4d-4649-9c89-2d3abc0a5025",
+                    "parameters": {
+                        "tagName": {
+                            "value": "[parameters('dataClassification')]"
+                        }
+                    }
+                },
+                {
+                    "policyDefinitionReferenceId": "Require a tag on resource groups_appOwner",
+                    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/96670d01-0a4d-4649-9c89-2d3abc0a5025",
+                    "parameters": {
+                        "tagName": {
+                            "value": "[parameters('appOwner')]"
+                        }
+                    }
+                }                                                                                                  
+            ]
+        }
+        }        
+    ],
+    "outputs": {}
+}

@@ -1,0 +1,64 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/managementGroupDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "tenantRootID": {
+            "type": "string",
+            "metadata": {
+                "description": "Tenant Root Group ID"
+            }
+        },
+        "roleName": {
+            "type": "string",
+            "metadata": {
+                "description": "CustomRole Name"
+            }
+        },
+        "roleDescription": {
+            "type": "string",
+            "metadata": {
+                "description": "Custom role description"
+            }
+        },
+        "actions": {
+            "type": "array",
+            "metadata": {
+                "description": "(array) of Actions"
+            }
+        },
+        "notActions": {
+            "type": "array",
+            "metadata": {
+                "description": "(array) of notActions"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {
+        "roleDefName": "[concat('cr-', parameters('roleName'))]",
+        "roleDegGUID": "[guid(string(variables('roleDefName')))]"
+    },
+    "resources": [
+        {
+        "type": "Microsoft.Authorization/roleDefinitions",
+        "apiVersion": "2018-07-01",
+        "name": "[variables('roleDegGUID')]",
+        "properties": {
+            "roleName": "[variables('roleDefName')]",
+            "description": "[parameters('roleDescription')]",
+            "type": "customRole",
+            "isCustom": true,
+            "permissions": [
+            {
+                "actions": "[parameters('actions')]",
+                "notActions": "[parameters('notActions')]"
+            }
+            ],
+            "assignableScopes": [
+                "[concat('providers/Microsoft.Management/managementGroups/', parameters('tenantRootID'))]"
+            ]
+        }
+        }        
+    ],
+    "outputs": {}
+}

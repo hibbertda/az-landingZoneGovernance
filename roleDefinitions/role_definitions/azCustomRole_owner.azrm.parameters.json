@@ -1,0 +1,61 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "tenantRootID":{
+            "value": ""
+        },        
+        "roleName": {
+            "value": "owner"
+        },
+        "roleDescription": {
+            "value": "Custom Owner Role"
+        },
+        "actions": {
+            "value": [
+                "*"
+            ]
+        },
+        "notActions": {
+            "value": [
+                "Microsoft.Management/managementGroups/settings/delete",
+                "Microsoft.Management/managementGroups/settings/write",
+                "Microsoft.Management/managementGroups/subscriptions/delete",
+                "Microsoft.Management/managementGroups/subscriptions/write",
+                "Microsoft.Management/managementGroups/delete",
+                "Microsoft.Management/managementGroups/write",
+                "Microsoft.Management/register/*",
+                "Microsoft.Management/getEntities/*",
+                "Microsoft.Management/checkNameAvailability/*",
+                "Microsoft.Network/PublicIPAddress/*",
+                "Microsoft.Network/virtualnetworkgateway/*",
+                "Microsoft.Network/vpnsites/*",
+                "Microsoft.Network/virtualNetworks/write",
+                "Microsoft.Network/virtualNetworks/delete",
+                "Microsoft.Network/virtualNetworks/virtualNetworkPeerings/write",
+                "Microsoft.Network/virtualNetworks/virtualNetworkPeerings/delete",                
+                "Microsoft.Network/localnetworkgateways/write",
+                "Microsoft.Network/localnetworkgateways/delete",
+                "Microsoft.Network/trafficManagerProfiles/externalEndpoints/write",
+                "Microsoft.Network/trafficManagerProfiles/externalEndpoints/delete",
+                "Microsoft.Network/trafficManagerProfiles/azureEndpoints/write",
+                "Microsoft.Network/trafficManagerProfiles/azureEndpoints/delete",
+                "Microsoft.Network/expressRouteCircuits/*",
+                "Microsoft.Network/connections/write",
+                "Microsoft.Network/connections/delete",
+                "microsoft.network/connections/sharedkey/action",
+                "Microsoft.Network/connections/sharedKey/write",
+                "Microsoft.Network/applicationGateways/write",
+                "Microsoft.Network/applicationGateways/delete",
+                "Microsoft.Network/applicationGateways/backendhealth/action",
+                "Microsoft.Network/applicationGateways/start/action",
+                "Microsoft.Network/applicationGateways/stop/action",
+                "Microsoft.Network/applicationGateways/backendAddressPools/join/action",
+                "Microsoft.Network/routeTables/delete",
+                "Microsoft.Network/routeTables/routes/delete",
+                "Microsoft.Network/virtualwans/delete",
+                "Microsoft.Network/virtualwans/write"                                   
+            ]
+        }
+    }
+}
