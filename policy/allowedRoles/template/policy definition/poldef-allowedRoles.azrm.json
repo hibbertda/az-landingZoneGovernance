@@ -29,7 +29,7 @@
     },
     "variables": {
         "scopedMGId": "[tenantResourceId('Microsoft.Management/managementGroups', parameters('scopedMG'))]",
-        "policyDefinition": "pol-disallowedRoleIDs"
+        "policyDefinition": "poldef-allowedRoles"
     },
     "resources": [
         {
@@ -39,6 +39,8 @@
             "properties": {
                 "policyType": "Custom",
                 "mode": "All",
+                "displayName": "Allowed Roles",
+                "description": "",
                 "parameters": {
                     "roledefinitionIds": {
                         "type": "array",
