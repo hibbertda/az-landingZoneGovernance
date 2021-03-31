@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "env": {
+            "value": "plt"
+        },
+        "org": {
+            "value": "demo"
+        },
+        "vnetipv4Prefix": {
+            "value": "10.10.0.0/16"
+        },
+        "defaultSubnets": {
+            "value": [
+                {
+                    "name":"default",
+                    "ipv4Prefix": "10.10.3.0/24"
+                },
+                {
+                    "name":"webApp1",
+                    "ipv4Prefix": "10.10.4.0/24"
+                }                
+            ]
+        },
+        "bastionPrefix": {
+            "value": "10.10.250.0/27"
+        },
+        "defaultRoutes": {
+            "value": [
+                {
+                    "name":"out-internet",
+                    "addressPrefix":"0.0.0.0/0",
+                    "nextHopType":"Internet"
+                }
+            ]
+        }
+    }
+}

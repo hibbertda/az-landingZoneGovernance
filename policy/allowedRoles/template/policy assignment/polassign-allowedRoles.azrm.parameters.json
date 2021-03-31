@@ -3,9 +3,9 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "targetManagementGroup": {
-            "value": ""
+            "value": "jsonMG1"
         },
-        "allowedRoleDefinitions": {
+        "policyParameters": {
             "value": [
                 "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7",
                 "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",

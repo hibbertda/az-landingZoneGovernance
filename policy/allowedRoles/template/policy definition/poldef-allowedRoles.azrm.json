@@ -40,7 +40,7 @@
                 "policyType": "Custom",
                 "mode": "All",
                 "displayName": "Allowed Roles",
-                "description": "",
+                "description": "(Custom) Only allow authorized role definitions",
                 "parameters": {
                     "roledefinitionIds": {
                         "type": "array",

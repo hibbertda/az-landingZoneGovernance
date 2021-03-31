@@ -8,27 +8,42 @@
                 "description": "management group scope for policy assignment"
             }
         },
-        "allowedRoleDefinitions": {
+        "policyParameters": {
             "type": "array",
             "metadata": {
-                "description": "array of allowed role defintions"
+                "description": "Parameters for the policy assignment"
             }
+        },
+        "enforcementMode": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy enforcement mode"
+            },
+            "allowedValues": [
+                "Default",
+                "DoNotEnforce"
+            ],
+            "defaultValue": "Default"
         }
     },
     "variables": {
-        "mgScope": "[tenantResourceId('Microsoft.Management/managementGroups', parameters('targetManagementGroup'))]"
+        "mgScope": "[tenantResourceId('Microsoft.Management/managementGroups', parameters('targetManagementGroup'))]",
+        "policyDefinition": "poldef-allowedRoles",
+        "policyDefinitionID": "[extensionResourceId(variables('mgScope'), 'Microsoft.Authorization/policyDefinitions', variables('policyDefinition'))]",
+        "policyAssignmentName": "[concat(variables('policyDefinition'))]"
     },
     "resources": [
         {
             "type": "Microsoft.Authorization/policyAssignments",
-            "name": "location-lock",
-            "apiVersion": "2019-09-01",
-            "dependsOn": [
-                "[variables('policyDefinition')]"
-                ],
+            "name": "[variables('policyAssignmentName')]",
+            "apiVersion": "2020-03-01",
             "properties": {
                 "scope": "[variables('mgScope')]",
-                "policyDefinitionId": "[extensionResourceId(variables('mgScope'), 'Microsoft.Authorization/policyDefinitions', variables('policyDefinition'))]"
+                "policyDefinitionId": "[variables('policyDefinitionID')]",
+                "enforcementMode": "[parameters('enforcementMode')]",
+                "parameters": {
+                    "allowedRoleDefinitions":["[parameters('policyParameters')]"]
+                    }
             }
         }        
     ]

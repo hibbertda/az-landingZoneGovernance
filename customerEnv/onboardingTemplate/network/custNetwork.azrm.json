@@ -1,0 +1,265 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "env": {
+            "type": "string",
+            "metadata": {
+                "description": "Environment identifier"
+            },
+            "allowedValues": [
+                "plt",
+                "snb",
+                "dev",
+                "prd"
+            ]
+        },
+        "org": {
+            "type": "string",
+            "metadata": {
+                "description": "Organizational / Office identifier"
+            }
+        },
+        "vnetipv4Prefix": {
+            "type": "string",
+            "metadata": {
+                "description": "Ipv4 Prefix"
+            }
+        },
+        "defaultSubnets": {
+            "type": "array",
+            "metadata": {
+                "description": "(array) List of default subnets and prefixes"
+            },
+            "defaultValue": [
+                {
+                    "name":"default",
+                    "ipv4Prefix": "10.10.3.0/24"
+                }
+            ]
+        },
+        "bastionPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "Azure Bastion IPv4 prefix."
+            }
+        },
+        "defaultRoutes": {
+            "type": "array",
+            "metadata": {
+                "description": "(array) List of default route entries for AzRouteTable"
+            }
+        },
+        "privDNSDomain": {
+            "type": "string",
+            "metadata": {
+                "description": "Domain suffic for PrivateDNS zones"
+            },
+            "defaultValue":"privdns.thehibbs.net"
+        }
+    },
+    "variables": {
+        "nameRoot": "[concat(parameters('env'),'-',parameters('org'),'-', resourceGroup().location)]",
+        "nsgName": "[concat('nsg-', variables('nameRoot'))]",
+        "vnetName":"[concat('vnet-', variables('nameRoot'))]",
+        "subnetRoot": "[concat('sn-', variables('nameRoot'))]",
+        "routeTableName": "[concat('rt-', variables('nameRoot'))]",
+        "privDNSName":"[concat(parameters('org'),'-',parameters('env'),'.',parameters('privDNSDomain'))]"
+    },
+    "resources": [
+        {
+            "name": "[variables('nsgName')]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2019-11-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "allow-out-AzMonitor",
+                        "properties": {
+                            "description": "Allow local VNet access to Azure Monitor",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "AzureMonitor",
+                            "access": "Allow",
+                            "priority": 200,
+                            "direction": "Outbound"
+                        }
+                    },
+                    {
+                        "name": "allow-out-AzStorage",
+                        "properties": {
+                            "description": "Allow local VNet access to Azure Storage services",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "Storage",
+                            "access": "Allow",
+                            "priority": 210,
+                            "direction": "Outbound"
+                        }
+                    },
+                    {
+                        "name": "allow-out-AzKeyVault",
+                        "properties": {
+                            "description": "Allow local VNet access to Azure KeyVault",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "AzureKeyVault",
+                            "access": "Allow",
+                            "priority": 220,
+                            "direction": "Outbound"
+                        }
+                    },
+                    {
+                        "name": "allow-out-AzAD",
+                        "properties": {
+                            "description": "Allow local VNet access to Azure Active Directory (AAD)",
+                            "protocol": "tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "443",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "AzureActiveDirectory",
+                            "access": "Allow",
+                            "priority": 230,
+                            "direction": "Outbound"
+                        }
+                    },
+                    {
+                        "name": "allow-out-AzSQL",
+                        "properties": {
+                            "description": "Allow local VNet access to Azure Active Directory (AAD)",
+                            "protocol": "tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "sql",
+                            "access": "Allow",
+                            "priority": 240,
+                            "direction": "Outbound"
+                        }
+                    },
+                    {
+                        "name": "allow-in-AzBastion",
+                        "properties": {
+                            "description": "Allow remote connections from Azure Bastion (SSH/RDP)",
+                            "protocol": "tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRanges": [
+                                "22",
+                                "3389"
+                            ],
+                            "sourceAddressPrefix": "[parameters('bastionPrefix')]",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 250,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "deny-in-AzBastion",
+                        "properties": {
+                            "description": "Deny non SSH/RDP connections from Azure Bastion subnet",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "[parameters('bastionPrefix')]",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 251,
+                            "direction": "Inbound"
+                        }
+                    }                                                                                                                                                            
+                ]
+            }
+        },
+        {
+            "name": "[variables('vnetName')]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2019-11-01",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[variables('nsgName')]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('vnetipv4Prefix')]"
+                    ]
+                },
+                "copy": [
+                    {
+                        "name":"subnets",
+                        "count": "[length(parameters('defaultSubnets'))]",
+                        "input": {
+                            "name":"[concat(variables('subnetRoot'),'-',parameters('defaultSubnets')[copyIndex('subnets')].name)]",
+                            "properties": {
+                                "addressPrefix": "[parameters('defaultSubnets')[copyIndex('subnets')].ipv4Prefix]",
+                                "networkSecurityGroup": {
+                                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsgName'))]"
+                                },
+                                "serviceEndpoints": [
+                                    {
+                                        "service": "Microsoft.Storage",
+                                        "locations": [
+                                            "[resourceGroup().location]"
+                                        ]
+                                    },
+                                    {
+                                        "service": "Microsoft.KeyVault",
+                                        "locations": [
+                                            "[resourceGroup().location]"
+                                        ]
+                                    },
+                                    {
+                                        "service": "Microsoft.Sql",
+                                        "locations": [
+                                            "[resourceGroup().location]"
+                                        ]
+                                    }                                                                        
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+ {
+            "apiVersion": "2019-04-01",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(variables('vnetName'), '/', 'AzureBastionSubnet')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+            ],
+            "properties": {
+                "addressPrefix": "[parameters('bastionPrefix')]"
+            }     
+        },
+        {
+            "name": "[variables('routeTableName')]",
+            "type": "Microsoft.Network/routeTables",
+            "apiVersion": "2019-11-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+            },
+            "properties": {
+                "disableBgpRoutePropagation": true
+            }
+        },
+        {
+            "name": "[variables('privDNSName')]",
+            "type": "Microsoft.Network/privateDnsZones",
+            "apiVersion": "2018-09-01",
+            "location": "global",
+            "properties": {
+            }
+        }    
+    ],
+    "outputs": {}
+}
