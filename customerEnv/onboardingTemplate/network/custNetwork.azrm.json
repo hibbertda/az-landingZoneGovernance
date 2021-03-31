@@ -30,13 +30,7 @@
             "type": "array",
             "metadata": {
                 "description": "(array) List of default subnets and prefixes"
-            },
-            "defaultValue": [
-                {
-                    "name":"default",
-                    "ipv4Prefix": "10.10.3.0/24"
-                }
-            ]
+            }
         },
         "bastionPrefix": {
             "type": "string",
@@ -259,7 +253,19 @@
             "location": "global",
             "properties": {
             }
-        }    
+        },
+        {
+            "name": "[concat(variables('privDNSName'),'/pDNSVNETLink-', variables('privDNSName'),'-',variables('vnetName'))]",
+            "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+            "apiVersion": "2018-09-01",
+            "location": "global",
+            "properties": {
+                "virtualNetwork": {
+                    "id":"[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+                },
+                "registrationEnabled": true
+            }
+        }            
     ],
     "outputs": {}
 }
